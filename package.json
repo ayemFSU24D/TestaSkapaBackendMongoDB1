@@ -1,0 +1,19 @@
+{
+  "name": "testaskapabackendmongodb",
+  "version": "1.0.0",
+  "main": "index.js",
+
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "mongodb": "^7.0.0",
+    "express": "^4.18.2"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

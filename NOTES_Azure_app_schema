@@ -1,0 +1,147 @@
+✔ YAML till Azure
+✔ Autoscaling (baserat på CPU eller HTTP)
+✔ MongoDB-container i Azure (med persistent storage)
+✔ Backend som pratar med MongoDB via intern adress
+✔ TLS-adresser så du kan ansluta med Mongo Compass
+
+🟦 1. Din lokala docker-compose (som du redan har)
+
+Den använder du bara lokalt — allt är rätt.
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: no
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  mongodata:
+
+🟦 2. Azure Container Apps – YAML för backend + MongoDB
+
+Detta är deploy-klart.
+
+✔ azure-app.yaml (backend)
+name: my-backend
+type: containerapp
+location: westeurope
+properties:
+  environmentId: /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.Web/containerApps/<ENV>
+  configuration:
+    ingress:
+      external: true
+      targetPort: 3000
+    secrets:
+      - name: mongo-url
+        value: mongodb://mongo-service:27017
+  template:
+    containers:
+      - name: backend
+        image: ghcr.io/<ditt-konto>/<backend-image>:latest
+        env:
+          - name: MONGO_URL
+            secretRef: mongo-url
+    scale:
+      minReplicas: 1
+      maxReplicas: 10
+      rules:
+        - name: http-scale
+          http:
+            metadata:
+              concurrentRequests: "100"
+
+✔ azure-mongo.yaml (MongoDB i Azure Container Apps)**
+
+Detta är samma sak som din docker-compose, fast i Azure-form.
+
+name: mongo-service
+type: containerapp
+location: westeurope
+properties:
+  environmentId: /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.Web/containerApps/<ENV>
+  configuration:
+    ingress:
+      external: true
+      targetPort: 27017
+    secrets: []
+    volumes:
+      - name: mongodata
+        storageType: azureFile
+        path: /data/db
+  template:
+    containers:
+      - name: mongo
+        image: mongo:latest
+        volumeMounts:
+          - volumeName: mongodata
+            mountPath: /data/db
+    scale:
+      minReplicas: 1
+      maxReplicas: 3
+      rules:
+        - name: cpu-scale
+          custom:
+            type: cpu
+            metadata:
+              threshold: "80"
+
+🟦 3. Så kopplar backend → Azure MongoDB
+
+I backend kör du:
+
+const client = new MongoClient(process.env.MONGO_URL);
+
+
+Azure injicerar:
+
+mongodb://mongo-service:27017
+
+
+🟩 mongo-service = namnet på MongoDB-containerappen i Azure
+🟩 Intern DNS → backend hittar MongoDB automatiskt
+
+🟦 4. Länka MongoDB i Azure till Mongo Compass
+
+Eftersom vi satte:
+
+ingress:
+  external: true
+  targetPort: 27017
+
+
+kommer Azure skapa en publik adress, t.ex.:
+
+https://mongo-service.greenfall-1234.europe.azurecontainerapps.io
+
+
+Men MongoDB kräver rå TCP, inte HTTP, så du måste skapa en extern TCP-ingress:
+
+✔ Kör i Azure CLI:
+az containerapp ingress enable \
+  --name mongo-service \
+  --resource-group <RG> \
+  --type external \
+  --transport tcp \
+  --target-port 27017
+
+
+Då får du:
+
+tcp://mongo-service.<env>.azurecontainerapps.io:27017
+
+Sedan i Mongo Compass skriver du:
+mongodb://mongo-service.<ENV>.azurecontainerapps.io:27017
+
+🟦 5. Så deployar du
+az containerapp create --file azure-mongo.yaml
+az containerapp create --file azure-app.yaml
+
+🟩 Sammanfattning
+Del	Lokal Docker	Azure
+MongoDB	docker-compose	azure-mongo.yaml
+Backend	npm start	azure-app.yaml
+Autoscaling	❌	✔ CPU / HTTP
+Mongo Compass	localhost:27017	mongo-service.<env>.io:27017

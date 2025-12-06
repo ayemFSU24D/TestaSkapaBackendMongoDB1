@@ -1,0 +1,89 @@
+ // npm --y  //skapar package.json
+
+// "license": "ISC", //  radera licensen ISC 
+//  "type": "module", //lägg till den raden
+
+// npm install mongo  // i terminalen 
+//        om det inte fungerar"Error" skriv den: npm install mongodb --force --registry=https://registry.npmjs.org/
+
+// skapa index.js filen
+//  i filen skriv:
+// import { MongoClient } from "mongodb";
+
+
+
+
+
+//--------------------index.js------------------------------
+//--------------------------------------------------------------------------
+// console.log(MongoClient);            //skriver ut i terminalen det som  är i ()
+// let client= new MongoClient("...URL från Attlas för driver...");
+// console.log(client)                   // med: node index.js  - komandot tvingas index.js köras(aktuellt om man vill testa)
+// 
+// let connect= async function () {
+//    await client.connect();           //kopplar klienten
+//    console.log("Connected")          // skriver ut Connected i terminalen när koden körs
+//              --------------------------------------------------------------
+//              ----------------All kod som hämtar, scickar till DB skrivs inuti funktionen:------
+//  Välj databas och collection
+//       const db = client.db("myDatabase");
+//       const collection = db.collection("testCollection");
+//
+//  Gör något med databasen
+//        await collection.insertOne({ name: "Alice", age: 25 });
+//        console.log("Document inserted");
+//
+//        const docs = await collection.find({}).toArray();
+//        console.log(docs);
+
+//        Stäng anslutningen
+//        await client.close();
+// -------------------------------------------------------------------------
+//   }
+
+// Kör funktionen längst ner i index.js:
+// connect();
+
+
+//--------------------------Koppla Backend(servern) till local port(300) eller till molnbaserat server
+
+// import express from "express";                       //kopplar backenden(servern) till non port
+// const app = express();
+//app.use(express.json()); - Middleware / JSON parsing
+
+// Starta servern längst ner:
+//const port = process.env.PORT || 3000;   //man definerar molntjänstens parametrar i "process.env.PORT" eller om problem med anslutning, använder lokal port.
+//                                         D.v.s att parametrarna är inte för att jag ska kopplar
+//                                         till vercel server versionen. Därför så fort jag kör komandot node index.js(manuel körning) eller npm run dev(automatiserat körning--kolla inställningarana nere) i terminalen kopplas jag till 
+//                                         port 300 eftersom min kod hittar inga uppgifter i process.env.PORT(den är inte avsätt att ge mig 
+//                                         tillgång till molnservern, utan bara att svara på för frågningar från molnservern-t.e Vercel )
+//app.listen(port, () => console.log(`Server running on port ${port}`));
+
+
+
+//------------------npm run dev-----------------------------------------------------------
+/* ----------om du vill att koden ska köras automatisk utan att skriva hela tiden node index.js----------
+//
+# Installera globalt
+npm install -g nodemon
+
+# Eller som dev-dependency
+npm install --save-dev nodemon
+Ändra package.json för att lägga till ett start-script:
+
+json
+Copy code
+"scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js"
+}
+Kör sedan lokalt:
+
+bash
+Copy code
+npm run dev */
+
+
+//------------------Docker---------------------------
+//----docker-compose up -d  ----------bygger containern i Docker---
+//---- npm start  ----------för att starta kontainern i Docker
