@@ -21,6 +21,21 @@ Cosmos DB är fullt hanterad → skalning och backup
 
 
 
+--------------------------den är strukturen som Azure förväntar sig när man använder backend och frontend i samma repo---------------
+
+myrepo/
+│
+├── frontend/       ← React, Vite, Next etc.
+│    ├── package.json
+│    └── src/
+│
+└── backend/        ← Node.js API (Express)
+     ├── Dockerfile   ← används för Container App
+     └── index.js
+
+
+
+
 
 
 
