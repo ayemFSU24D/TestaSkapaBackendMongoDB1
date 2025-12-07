@@ -1,10 +1,52 @@
 services:
-  mongo:
+  mongo: 
     image: mongo:latest
     restart: no
     ports:
       - 27017:27017
     volumes:
       - mongodata:/data/db
+  backend:
+    image: ghcr.io/<ditt-konto>/<backend-image>:latest
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - MONGO_URL=mongodb://mongo:27017
+    depends_on:
+      - mongo
 volumes:
   mongodata:
+
+
+
+
+
+
+#-------------------------------min nya version från chatten---------------------------------------
+
+  version: '3.9'
+
+services:
+  backend:
+    build: ./backend # byggs från instruktionerna i Dockerfile/ Man kan använda färdigt image också (då behövs ingen Dockerfile iom allt redan finns i den färdiga imagen)
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017 # Använd lokal MongoDB under utveckling
+     #- MONGO_URL=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority #---För deployment i Azure
+    volumes:
+      # Live-uppdatering av koden
+      - ./backend:/app
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

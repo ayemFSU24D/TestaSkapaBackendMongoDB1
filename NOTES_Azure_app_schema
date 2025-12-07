@@ -1,3 +1,33 @@
+
+3️⃣ Arkitekturförslag
+Frontend (React)
+  └─ Azure Static Web App
+       └─ Anropar Backend API
+
+Backend (Node.js + Express)
+  └─ Azure Container App
+       └─ Använder MONGO_URL
+
+Databas (MongoDB)
+  └─ Azure Cosmos DB (MongoDB API)
+
+
+ACA klarar autoskalning för backend
+
+Frontend klarar autoskalning via Static Web Apps
+
+Cosmos DB är fullt hanterad → skalning och backup
+
+
+
+
+
+
+
+
+
+
+----------------------------------------gammal exempeltext nedan----------------------------------------
 ✔ YAML till Azure
 ✔ Autoscaling (baserat på CPU eller HTTP)
 ✔ MongoDB-container i Azure (med persistent storage)
