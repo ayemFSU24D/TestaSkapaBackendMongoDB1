@@ -1,0 +1,19 @@
+services:
+  mongo: 
+    image: mongo:latest
+    restart: no
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+  backend:
+    image: ghcr.io/<ditt-konto>/<backend-image>:latest
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - MONGO_URL=mongodb://mongo:27017
+    depends_on:
+      - mongo
+volumes:
+  mongodata:

@@ -7,7 +7,7 @@ services:
     volumes:
       - mongodata:/data/db
   backend:
-    image: ghcr.io/<ditt-konto>/<backend-image>:latest
+    image: ghcr.io/<ayemFSU24D>/<backend-image>:latest #Github username: ayemFSU24D
     restart: always
     ports:
       - 3000:3000

@@ -36,6 +36,11 @@ myrepo/
 
 
 
+     I Azure skapar man resource group som representerar projektet. Till den gruppen lägger man sedan till resurser: DB(Cosmos), Backend (Container App), Frontend (Static Web App) och container registry (ACR)- azure-app.yaml säger vilken image ska användas och image hämtas från container registry.
+
+
+
+
 
 
 

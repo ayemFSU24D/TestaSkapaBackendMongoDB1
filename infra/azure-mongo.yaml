@@ -1,0 +1,30 @@
+name: mongo-service
+type: containerapp
+location: westeurope
+properties:
+  environmentId: /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.Web/containerApps/<ENV>
+  configuration:
+    ingress:
+      external: true
+      targetPort: 27017
+    secrets: []
+    volumes:
+      - name: mongodata
+        storageType: azureFile
+        path: /data/db
+  template:
+    containers:
+      - name: mongo
+        image: mongo:latest
+        volumeMounts:
+          - volumeName: mongodata
+            mountPath: /data/db
+    scale:
+      minReplicas: 1
+      maxReplicas: 3
+      rules:
+        - name: cpu-scale
+          custom:
+            type: cpu
+            metadata:
+              threshold: "80"

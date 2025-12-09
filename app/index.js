@@ -10,8 +10,8 @@ app.use(express.json())
 
 //let client= new MongoClient("...URL från Attlas för driver...");// för koppling till Mongo Atlass-cloud
 // let client = new MongoClient("mongodb://admin:pass123@localhost:27017");// till localhost som i sin tur kan vidarebefodra till DBen i Docker
- let client = new MongoClient("mongodb://localhost:27017");//--utan password
-
+ let client = new MongoClient( process.env.COSMOSDB_CONNECTION_STRING ||"mongodb://localhost:27017");//--utan password
+                                                //är ssl=true i MONGO_URL?--inställning i Azure DB klustret
 console.log(client);
 let db;
 
@@ -26,6 +26,11 @@ console.log(notes);
 }
 
 connect();
+
+
+app.get('/', (_req, res) => {
+  res.send('Hello Backend Express!');
+});
 
 app.post("/add", async (req, res) => {
     try {

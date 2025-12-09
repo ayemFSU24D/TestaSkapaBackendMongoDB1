@@ -1,0 +1,27 @@
+name: my-backend
+type: containerapp
+location: westeurope
+properties:
+  environmentId: /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.Web/containerApps/<ENV>
+  configuration:
+    ingress:
+      external: true
+      targetPort: 3000
+    secrets:
+      - name: mongo-url
+        value: mongodb://mongo-service:27017
+  template:
+    containers:
+      - name: backend
+        image: ghcr.io/<ditt-konto>/<backend-image>:latest
+        env:
+          - name: MONGO_URL
+            secretRef: mongo-url
+    scale:
+      minReplicas: 1
+      maxReplicas: 10
+      rules:
+        - name: http-scale
+          http:
+            metadata:
+              concurrentRequests: "100"
