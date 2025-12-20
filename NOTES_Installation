@@ -61,6 +61,13 @@
 
 
 
+//------------------------cors-----------------------
+//npm install express node-fetch cors
+// import cors from "cors";
+// app.use(cors());  //Lägger till CORS-middleware för att hantera cross-origin requests
+
+
+
 //------------------npm run dev-----------------------------------------------------------
 /* ----------om du vill att koden ska köras automatisk utan att skriva hela tiden node index.js----------
 //
