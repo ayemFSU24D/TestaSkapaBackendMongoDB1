@@ -6,6 +6,8 @@ import fetch from "node-fetch";
 import fs from "fs";
 import csv from "csv-parser"; 
 import { pipeline } from "stream/promises";
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 
@@ -17,11 +19,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-//let client= new MongoClient(process.env.MONGO_URL); //Azure injiceras: mongodb://mongo-service:27017 //mongo-service = name of MongoDB-containerappen in Azure, Intern DNS → backend hittar MongoDB automatiskt
+let client= new MongoClient(process.env.MONGO_URL); //Azure injiceras: mongodb://mongo-service:27017 //mongo-service = name of MongoDB-containerappen in Azure, Intern DNS → backend hittar MongoDB automatiskt
 
 //let client= new MongoClient("...URL från Attlas för driver...");// för koppling till Mongo Atlass-cloud
 // let client = new MongoClient("mongodb://admin:pass123@localhost:27017");// till localhost som i sin tur kan vidarebefodra till DBen i Docker
- let client = new MongoClient("mongodb://localhost:27017");//--utan password
+// let client = new MongoClient("mongodb://localhost:27017");//--utan password
 
 console.log(client);
 let db;
