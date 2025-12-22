@@ -1,4 +1,6 @@
+version: '3.9'
 services:
+  # MongoDB service
   mongo: 
     image: mongo:latest
     restart: no
@@ -6,9 +8,11 @@ services:
       - 27017:27017
     volumes:
       - mongodata:/data/db
+  # Node JS backend service
   backend:
-    image: ghcr.io/<ayemFSU24D>/<backend-image>:latest #Github username: ayemFSU24D
-    restart: always
+    build: .
+    image: drugtargets3dhuman-f9e5g4e9h5e5aces.azurecr.io/backend:latest  # ghcr.io/ayemfsu24d/backend-image:latest #Github username: ayemFSU24D om man ska hämta från Docker Hub istället
+    restart: no
     ports:
       - 3000:3000
     environment:
@@ -17,36 +21,3 @@ services:
       - mongo
 volumes:
   mongodata:
-
-
-
-
-
-
-#-------------------------------min nya version från chatten---------------------------------------
-
-  version: '3.9'
-
-services:
-  backend:
-    build: ./backend # byggs från instruktionerna i Dockerfile/ Man kan använda färdigt image också (då behövs ingen Dockerfile iom allt redan finns i den färdiga imagen)
-    ports:
-      - "3000:3000"
-    environment:
-      - MONGO_URL=mongodb://mongo:27017 # Använd lokal MongoDB under utveckling
-     #- MONGO_URL=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority #---För deployment i Azure
-    volumes:
-      # Live-uppdatering av koden
-      - ./backend:/app
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo:7.0
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-
-volumes:
-  mongo_data:
