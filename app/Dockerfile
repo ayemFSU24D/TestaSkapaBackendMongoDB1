@@ -1,3 +1,12 @@
+#-------------------------- hur man bygger EN container------------------------------
+#-------------------------- Dockerfile = byggrecept------------------------------
+
+#------------Dockerfile svarar på frågan: Hur skapar jag en Docker-image av min app?
+#Den beskriver: vilket OS / runtime (t.ex. Node.js),hur koden kopieras in, hur beroenden installeras, hur appen startas
+#---------Och senare receptet användas av pipeline(den alltid använder Dockerfile) om man använder pipeline för deployment------------------------
+
+
+
 # Basimage
 FROM node:20
 

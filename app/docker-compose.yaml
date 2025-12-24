@@ -1,3 +1,9 @@
+#-------------------------- Docker-Compose file uses only for local development--not for pipeline as ------------------------------
+#-------------------------- docker-compose = orkestrering (lokalt) ------------------------------
+#-------------------------- Docker Compose – hur man kör FLERA containrar tillsammans(containrar skapas i Dockerfile) ------------------------------
+# Den: använder Dockerfile (eller färdiga images), beskriver hur containrar pratar med varandra, sätter portar, miljövariabler, volymer
+
+
 version: '3.9'
 services:
   # MongoDB service
@@ -10,7 +16,8 @@ services:
       - mongodata:/data/db
   # Node JS backend service
   backend:
-    build: .
+    build: .  # Optional----Betyder “Bygg en image med Dockerfile i denna mapp(istället att använda en färdig image som nedan), och kör den som en service”
+      # man använder antingen build eller image #
     image: drugtargets3dhuman-f9e5g4e9h5e5aces.azurecr.io/backend:latest  # ghcr.io/ayemfsu24d/backend-image:latest #Github username: ayemFSU24D om man ska hämta från Docker Hub istället
     restart: no
     ports:
