@@ -13,7 +13,7 @@ type ModelProps = {
 
 export function Model({ highlightedOrgans = [], onSelectOrgan }: ModelProps) {
   const meshRef = useRef<Mesh>(null!); // non-null assertion för TS
-  const { scene } = useGLTF("/models/Z-Anatomy_After_Blender.glb");
+  const { scene } = useGLTF("/models/Z-AnatomyMan_after_BlenderFel.glb");
 
   const highlightedSet = useMemo(
     () => new Set(highlightedOrgans.map((o) => o.toLowerCase())),
