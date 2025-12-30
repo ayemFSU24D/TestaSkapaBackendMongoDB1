@@ -213,6 +213,7 @@ export default function ModelPage() {
       const res = await fetch(`http://localhost:3000/api/drug/${drugInput}/organs`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
+      console.log("Fetched drug data:", data);
       setDrug(drugInput);
       setDrugData(data);
       setHighlightedOrgans(Object.keys(data.organs || {}));
@@ -244,9 +245,10 @@ export default function ModelPage() {
         <DirectionalLight position={[5, 5, 5]} />
 
         <Model
-          onSelectOrgan={(name: string) => setSelectedOrgan(name)}
-          highlightedOrgans={highlightedOrgans}
-          organLevels={drugData?.organs}
+          highlightedOrgans={
+            drugData ? Object.keys(drugData.organs) : []
+          }
+          onSelectOrgan={(name) => setSelectedOrgan(name)}
         />
 
         <OrbitControls maxDistance={10} minDistance={2} target={[0, 1, 0]} />
