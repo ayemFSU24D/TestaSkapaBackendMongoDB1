@@ -200,10 +200,9 @@ export default function ModelPage() {
   const meshRef = useRef<Mesh>(null!)
   const [drugInput, setDrugInput] = useState(""); // vad användaren skriver
   const [drug, setDrug] = useState("");               // läkemedel som visas
-  type DrugData = { drug: string; organs: Record<string, number> }
+  type DrugData = { drug: string; organs: Record<string, string> }
   const [drugData, setDrugData] = useState<DrugData | null>(null);
   const [highlightedOrgans, setHighlightedOrgans] = useState<string[]>([]);
-  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
 
 
   // Hämtar data när man klickar på knappen
@@ -217,7 +216,7 @@ export default function ModelPage() {
       setDrug(drugInput);
       setDrugData(data);
       setHighlightedOrgans(Object.keys(data.organs || {}));
-      setSelectedOrgan(null); // stäng popup om öppen
+     
     } catch (err) {
       console.error("Error fetching drug data:", err);
       setDrugData(null);
@@ -233,10 +232,10 @@ export default function ModelPage() {
           type="text"
           value={drugInput}
           onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
-          placeholder="Enter drug (e.g. aspirin)"
+          placeholder="Enter drug"
         />
         <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
-          Visa i 3D
+          {/* Visa i 3D */} Show in 3D
         </button>
       </div>
 
@@ -248,21 +247,19 @@ export default function ModelPage() {
           highlightedOrgans={
             drugData ? Object.keys(drugData.organs) : []
           }
-          onSelectOrgan={(name) => setSelectedOrgan(name)}
         />
 
         <OrbitControls maxDistance={10} minDistance={2} target={[0, 1, 0]} />
       </Canvas>
 
       {/* Popup med läkemedelsinfo */}
-      {selectedOrgan && drugData && (
-        <ProteinPopup
-          organ={selectedOrgan}
-          level={drugData.organs[selectedOrgan]}
-          drug={drugData.drug}
-          onClose={() => setSelectedOrgan(null)}
-        />
-      )}
+      {drugData && (
+  <ProteinPopup
+    drug={drugData.drug}
+    organs={drugData.organs}
+  />
+)}
+
     </>
   );
 }

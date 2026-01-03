@@ -9,7 +9,7 @@ export const Layout=()=>{
     <nav>
     <ul>
         <li>
-            <NavLink to={"/"} >Hem</NavLink>
+            <NavLink to={"/"} >Home</NavLink>
         </li>
 
         <li>
@@ -17,11 +17,11 @@ export const Layout=()=>{
         </li>
 
         <li>
-            <NavLink to={"/Signup"} >Logga in</NavLink>
+            <NavLink to={"/Signup"} >Sign in</NavLink>
         </li>
 
         <li>
-            <NavLink to={"/Contact"} >Kontakta oss</NavLink>
+            <NavLink to={"/Contact"} >Contact us</NavLink>
         </li>
     </ul>
 </nav>
