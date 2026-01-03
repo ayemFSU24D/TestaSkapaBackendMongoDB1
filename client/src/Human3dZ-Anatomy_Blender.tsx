@@ -43,8 +43,7 @@ function normalizeHPAName(name: string) {
 }
 
 export function Model({
-  highlightedOrgans = [],
-  onSelectOrgan,
+  highlightedOrgans = []
 }: ModelProps) {
   const { scene } = useGLTF("/models/Z-Anatomy+arm_muskles+armskinmesh2.glb");
   
@@ -63,7 +62,7 @@ export function Model({
       obj.material.transparent = true;
       
       const meshBase = normalizeZAnatomyName(obj.name);
-      console.log("Original Z-Anatomy name:", obj.name);
+     /*  console.log("Original Z-Anatomy name:", obj.name); */
       //console.log("Normalized Z-Anatomy name:", meshBase);
 
       if (!obj.userData.originalColor) {
@@ -100,7 +99,6 @@ export function Model({
       object={scene}
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
-        onSelectOrgan?.(normalizeZAnatomyName(e.object.name));
       }}
     />
   );

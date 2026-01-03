@@ -1,11 +1,10 @@
 interface ProteinPopupProps {
-  organ: string;
-  level: number; // eller string om det är text
   drug: string;
-  onClose: () => void; // en funktion utan argument som inte returnerar något
+  organs: Record<string, string>; // organs and their effect levels
+ 
 }
 
-export function ProteinPopup({ organ, level, drug, onClose }: ProteinPopupProps) {
+export function ProteinPopup({ drug, organs }: ProteinPopupProps) {
   return (
     <div
       style={{
@@ -17,16 +16,19 @@ export function ProteinPopup({ organ, level, drug, onClose }: ProteinPopupProps)
         border: "1px solid #ccc",
         borderRadius: "5px",
         zIndex: 2,
+        maxHeight: "70vh",
+        overflowY: "auto",
       }}
     >
-      <h3>{organ}</h3>
-      <p>
-        <strong>Drug:</strong> {drug}
-      </p>
-      <p>
-        <strong>Effect level:</strong> {level}
-      </p>
-      <button onClick={onClose}>Close</button>
+      <h3>Drug: {drug}</h3>
+      <ul style={{ paddingLeft: "20px" }}>
+        {Object.entries(organs).map(([organ, level]) => (
+          <li key={organ}>
+            <strong>{organ}:</strong> {level}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
+
