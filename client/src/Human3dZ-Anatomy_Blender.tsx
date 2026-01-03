@@ -71,8 +71,8 @@ export function Model({
       }
 
       // default: blek
-      obj.material.color.set("#cccccc");
-      obj.material.opacity = 0.15;
+      /* obj.material.color.set("#cccccc"); */
+      obj.material.opacity = 0.03;
       obj.material.depthWrite = false;
 
       // Highlight om match via HPAtoZAnatomyMap
