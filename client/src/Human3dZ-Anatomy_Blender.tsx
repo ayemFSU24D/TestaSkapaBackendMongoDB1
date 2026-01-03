@@ -16,13 +16,18 @@ type ModelProps = {
  *  "Bronchus.l" → "bronchus"
  *  "Cerebral cortex_xxxxx" → "cerebralcortex"
  */
+
+
+
+
 function normalizeZAnatomyName(name: string) {
   return name
     .toLowerCase()
-    .replace(/\..*$/, "") // ta bort allt efter punkt
-    .replace(/_.*/, "")   // ta bort allt efter underscore
-    .trim();              // behåll mellanslag mellan ord
+    .split(/\s|\.|_/)[0] // ta första ordet innan mellanslag, punkt eller underscore
+    .replace(/\d+$/, "") // ta bort siffror i slutet
+    .trim();
 }
+
 
 
 /**
@@ -41,7 +46,7 @@ export function Model({
   highlightedOrgans = [],
   onSelectOrgan,
 }: ModelProps) {
-  const { scene } = useGLTF("/models/Z-AnatomyMan_after_BlenderFel.glb");
+  const { scene } = useGLTF("/models/Z-Anatomy+arm_muskles+armskinmesh2.glb");
   
   // Skapa set av normaliserade HPA-namn
   const highlightedSet = useMemo(
