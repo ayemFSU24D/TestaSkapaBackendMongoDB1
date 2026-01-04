@@ -16,6 +16,7 @@ export function ProteinPopup({ drug, organs }: ProteinPopupProps) {
         border: "1px solid #ccc",
         borderRadius: "5px",
         zIndex: 2,
+        maxWidth: "300px",
         maxHeight: "70vh",
         overflowY: "auto",
       }}
