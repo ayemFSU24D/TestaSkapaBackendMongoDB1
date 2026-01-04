@@ -3,8 +3,20 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/DB.js";
 import drugRoutes from "./routes/drugRoutes.js";
+import { authenticate } from "./middleware/authenticate.js";
+import admin from "firebase-admin";
+import fs from "fs";
+
+const serviceAccount = JSON.parse(
+  fs.readFileSync(process.env.SERVICE_ACCOUNT_FILE, "utf8")
+);
+
 
 dotenv.config();
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const app = express();
 
@@ -19,7 +31,8 @@ app.get("/", (_req, res) => {
   res.send("Backend running");
 });
 
-app.use("/api/drug", drugRoutes);
+app.use("/auth-api/drug", drugRoutes);
+app.use("/free-api/drug", drugRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
