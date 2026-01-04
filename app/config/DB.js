@@ -5,13 +5,12 @@ dotenv.config();
 
 const client = new MongoClient(process.env.MONGO_URL);
 
-let tissueDB;
+
 let drugDB;
 
 export const connectDB = async () => {
   try {
     await client.connect();
-    tissueDB = client.db("BlaBla");
     drugDB = client.db("DrugCentral");
     console.log("MongoDB connected");
   } catch (err) {
@@ -19,4 +18,4 @@ export const connectDB = async () => {
   }
 };
 
-export { tissueDB, drugDB };
+export { drugDB };

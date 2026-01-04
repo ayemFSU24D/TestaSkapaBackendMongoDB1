@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { tissueDB, drugDB } from "../config/DB.js";
+import { drugDB } from "../config/DB.js";
 
 /* ---------------- HELPERS ---------------- */
 
@@ -76,7 +76,7 @@ export async function mapUniProtToEnsembl(uniprots) {
 export async function getOrgansFromMongoBatch(ensembls) {
   if (!ensembls.length) return {};
 
-  const rows = await tissueDB.collection("hpa_normal_tissue")
+  const rows = await drugDB.collection("hpa_normal_tissue")
     .find({ ensembl: { $in: ensembls } })
     .toArray();
 
