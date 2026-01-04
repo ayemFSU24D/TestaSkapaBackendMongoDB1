@@ -174,17 +174,18 @@ export default function ModelPage() {
       </Canvas>
     </div>
   );
-} */
+  } */
+ 
+ 
+ 
 
-
-
-
-//---------------------Ska testa först--------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!----Kopplat till Backend api för proteininfohämtning--------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!  Visar 3d kroppen och även specifika organer ------------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!------------------------
-
-
+ //---------------------Ska testa först--------------------
+ //---------------------Fungerar!!!!!!!!!!!!!!!----Kopplat till Backend api för proteininfohämtning--------------------
+ //---------------------Fungerar!!!!!!!!!!!!!!!  Visar 3d kroppen och även specifika organer ------------------------
+ //---------------------Fungerar!!!!!!!!!!!!!!!------------------------
+ 
+ 
+ import { getDrugData } from './services/DrugService';
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -206,23 +207,23 @@ export default function ModelPage() {
 
 
   // Hämtar data när man klickar på knappen
-  const fetchDrugData = async () => {
-    if (!drugInput) return;
-    try {
-      const res = await fetch(`http://localhost:3000/api/drug/${drugInput}/organs`);
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const data = await res.json();
-      console.log("Fetched drug data:", data);
-      setDrug(drugInput);
-      setDrugData(data);
-      setHighlightedOrgans(Object.keys(data.organs || {}));
-     
-    } catch (err) {
-      console.error("Error fetching drug data:", err);
-      setDrugData(null);
-      setHighlightedOrgans([]);
-    }
-  };
+
+const fetchDrugData = async () => {
+  if (!drugInput) return;
+
+  const data = await getDrugData(drugInput);
+
+  if (data) {
+    console.log("Fetched drug data:", data);
+    setDrug(drugInput);
+    setDrugData(data);
+    setHighlightedOrgans(Object.keys(data.organs || {}));
+  } else {
+    setDrugData(null);
+    setHighlightedOrgans([]);
+  }
+};
+
 
   return (
     <>
