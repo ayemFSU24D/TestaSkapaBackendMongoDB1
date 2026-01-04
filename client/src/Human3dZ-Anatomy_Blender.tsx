@@ -52,7 +52,6 @@ export function Model({
     () => new Set(highlightedOrgans.map(normalizeHPAName)),
     [highlightedOrgans]
   );
-  console.log("highlightedOrgans prop:", highlightedOrgans);
 
   useEffect(() => {
     scene.traverse((obj) => {
