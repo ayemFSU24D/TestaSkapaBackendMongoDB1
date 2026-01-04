@@ -194,16 +194,31 @@ import { ProteinPopup } from "./ProteinPopup";
 import { useRef } from 'react'
 import { Mesh } from 'three'
 import { AmbientLight, DirectionalLight } from './r3f-wrappers'
+import { auth } from "./firebase"; // justera path vid behov
+import { onAuthStateChanged, User } from "firebase/auth";
+import { useEffect } from "react";
 
 
 
 export default function ModelPage() {
+  const [user, setUser] = useState<User | null>(null);
+
   const meshRef = useRef<Mesh>(null!)
   const [drugInput, setDrugInput] = useState(""); // vad användaren skriver
   const [drug, setDrug] = useState("");               // läkemedel som visas
   type DrugData = { drug: string; organs: Record<string, string> }
   const [drugData, setDrugData] = useState<DrugData | null>(null);
   const [highlightedOrgans, setHighlightedOrgans] = useState<string[]>([]);
+
+
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+  });
+
+  return unsubscribe;
+}, []);
+
 
 
   // Hämtar data när man klickar på knappen
@@ -225,42 +240,45 @@ const fetchDrugData = async () => {
 };
 
 
-  return (
-    <>
-      {/* Input och knapp */}
-      <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
-        <input
-          type="text"
-          value={drugInput}
-          onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
-          placeholder="Enter drug"
-        />
-        <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
-          {/* Visa i 3D */} Show in 3D
-        </button>
-      </div>
+ if (!user) {
+  return <h2>Vänligen logga in för att se modellen.</h2>;
+}
 
-      <Canvas camera={{ position: [3, 2, 3], fov: 50 }} style={{ width: "100vw", height: "100vh" }}>
-        <AmbientLight intensity={0.6} />
-        <DirectionalLight position={[5, 5, 5]} />
+return (
+  <>
+    {/* Input och knapp */}
+    <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
+      <input
+        type="text"
+        value={drugInput}
+        onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
+        placeholder="Enter drug"
+      />
+      <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
+        Show in 3D
+      </button>
+    </div>
 
-        <Model
-          highlightedOrgans={
-            drugData ? Object.keys(drugData.organs) : []
-          }
-        />
+    <Canvas camera={{ position: [3, 2, 3], fov: 50 }} style={{ width: "100vw", height: "100vh" }}>
+      <AmbientLight intensity={0.6} />
+      <DirectionalLight position={[5, 5, 5]} />
 
-        <OrbitControls maxDistance={10} minDistance={2} target={[0, 1, 0]} />
-      </Canvas>
+      <Model
+        highlightedOrgans={
+          drugData ? Object.keys(drugData.organs) : []
+        }
+      />
 
-      {/* Popup med läkemedelsinfo */}
-      {drugData && (
-  <ProteinPopup
-    drug={drugData.drug}
-    organs={drugData.organs}
-  />
-)}
+      <OrbitControls maxDistance={10} minDistance={2} target={[0, 1, 0]} />
+    </Canvas>
 
-    </>
-  );
+    {drugData && (
+      <ProteinPopup
+        drug={drugData.drug}
+        organs={drugData.organs}
+      />
+    )}
+  </>
+);
+
 }
