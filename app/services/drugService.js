@@ -4,7 +4,11 @@ import { drugDB } from "../config/DB.js";
 /* ---------------- HELPERS ---------------- */
 
 export async function getClinicalUniprotsForDrug(drugName) {
-  const drug = await drugDB.collection("clinicaltargets").findOne({ generic_name: drugName });
+  console.log("getClinicalUniprotsForDrugkörs")
+  const drug = await drugDB.collection("clinicaltargets").findOne({
+  generic_name: { $regex: `^${drugName}$`, $options: "i" }
+});
+
   if (!drug || !Array.isArray(drug.targets)) return [];
 
   const uniprots = new Set();
@@ -18,7 +22,7 @@ export async function getClinicalUniprotsForDrug(drugName) {
       t.accession.split("|").map(a => a.trim()).filter(Boolean).forEach(a => uniprots.add(a));
     }
   }
-
+  console.log("uniprots",...uniprots)
   return [...uniprots];
 }
 
@@ -74,30 +78,34 @@ export async function mapUniProtToEnsembl(uniprots) {
 }
 
 export async function getOrgansFromMongoBatch(ensembls) {
+  console.log("Körs...Getting organs for Ensembl IDs:", ensembls);
   if (!ensembls.length) return {};
 
   const rows = await drugDB.collection("hpa_normal_tissue")
-    .find({ ensembl: { $in: ensembls } })
+    .find({ Gene: { $in: ensembls } })
     .toArray();
 
   const rank = { "Not detected": 0, "Low": 1, "Medium": 2, "High": 3 };
   const organs = {};
 
   for (const r of rows) {
-    if (!organs[r.tissue] || rank[r.level] > rank[organs[r.tissue]]) {
-      organs[r.tissue] = r.level;
+    if (!organs[r.Tissue] || rank[r.Level] > rank[organs[r.Tissue]]) {
+      organs[r.Tissue] = r.Level;
     }
   }
-
+console.log("Organs found:", organs);
   return organs;
 }
 
 export async function getDrugClinicalOrgans(drugName) {
+  console.log(`Drug name in getDrugClinicalOrgans: ${drugName}`);
   const uniprots = await getClinicalUniprotsForDrug(drugName);
   if (!uniprots.length) throw new Error("No clinical targets found");
 
   const ensembls = await mapUniProtToEnsembl(uniprots);
+  console.log("Mapped Ensembl IDs:", ensembls);
   const organs = await getOrgansFromMongoBatch(ensembls);
+  console.log("Associated organs:", organs);
 
   return { drug: drugName, uniprots, ensembls, organs };
 }
