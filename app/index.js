@@ -33,6 +33,8 @@ app.get("/", (_req, res) => {
 
 app.use("/auth-api/drug", drugRoutes);
 app.use("/free-api/drug", drugRoutes);
+app.use("/api/drug/", drugRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

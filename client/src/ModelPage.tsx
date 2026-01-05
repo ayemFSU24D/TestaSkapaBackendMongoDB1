@@ -185,7 +185,7 @@ export default function ModelPage() {
  //---------------------Fungerar!!!!!!!!!!!!!!!------------------------
  
  
- import { getDrugData } from './services/DrugService';
+ import { getDrugData, getDrugList } from './services/DrugService';
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -220,6 +220,12 @@ export default function ModelPage() {
 }, []);
 
 
+const [drugList, setDrugList] = useState<string[]>([]);
+
+useEffect(() => {
+  getDrugList().then(setDrugList);
+}, []);
+
 
   // Hämtar data när man klickar på knappen
 
@@ -246,18 +252,26 @@ const fetchDrugData = async () => {
 
 return (
   <>
-    {/* Input och knapp */}
-    <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
-      <input
-        type="text"
-        value={drugInput}
-        onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
-        placeholder="Enter drug"
-      />
-      <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
-        Show in 3D
-      </button>
-    </div>
+   <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
+  <input
+    list="drug-list"
+    type="text"
+    value={drugInput}
+    onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
+    placeholder="Enter drug"
+  />
+
+  <datalist id="drug-list">
+    {drugList.map((drug) => (
+      <option key={drug} value={drug} />
+    ))}
+  </datalist>
+
+  <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
+    Show in 3D
+  </button>
+</div>
+
 
     <Canvas camera={{ position: [3, 2, 3], fov: 50 }} style={{ width: "100vw", height: "100vh" }}>
       <AmbientLight intensity={0.6} />
