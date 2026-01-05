@@ -184,32 +184,29 @@ export default function ModelPage() {
  //---------------------Fungerar!!!!!!!!!!!!!!!  Visar 3d kroppen och även specifika organer ------------------------
  //---------------------Fungerar!!!!!!!!!!!!!!!------------------------
  
- 
- import { getDrugData } from './services/DrugService';
-import { useState } from "react";
+
+ import { getDrugData, getDrugList } from './services/DrugService';
+import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Model } from "./Human3dZ-Anatomy_Blender";
 import { ProteinPopup } from "./ProteinPopup";
-import { useRef } from 'react'
-import { Mesh } from 'three'
+import { Mesh } from 'three';
 import { AmbientLight, DirectionalLight } from './r3f-wrappers'
 import { auth } from "./firebase"; // justera path vid behov
 import { onAuthStateChanged, User } from "firebase/auth";
-import { useEffect } from "react";
-
-
 
 export default function ModelPage() {
   const [user, setUser] = useState<User | null>(null);
 
   const meshRef = useRef<Mesh>(null!)
   const [drugInput, setDrugInput] = useState(""); // vad användaren skriver
-  const [drug, setDrug] = useState("");               // läkemedel som visas
+  const [drug, setDrug] = useState("");           // läkemedel som visas
   type DrugData = { drug: string; organs: Record<string, string> }
   const [drugData, setDrugData] = useState<DrugData | null>(null);
   const [highlightedOrgans, setHighlightedOrgans] = useState<string[]>([]);
 
+const [drugList, setDrugList] = useState<string[]>([]);
 
   useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -219,6 +216,25 @@ export default function ModelPage() {
   return unsubscribe;
 }, []);
 
+
+  // Hämta drugList med caching
+  useEffect(() => {
+    const cached = localStorage.getItem("drugList");
+    if (cached) {
+      try {
+        setDrugList(JSON.parse(cached));
+        return; // vi behöver inte hämta från backend
+      } catch (err) {
+        console.error("Failed to parse cached drugList:", err);
+      }
+    }
+
+    // Annars hämta från backend och spara i localStorage
+    getDrugList().then((list) => {
+      setDrugList(list);
+      localStorage.setItem("drugList", JSON.stringify(list));
+    });
+  }, []);
 
 
   // Hämtar data när man klickar på knappen
@@ -241,23 +257,31 @@ const fetchDrugData = async () => {
 
 
  if (!user) {
-  return <h2>Vänligen logga in för att se modellen.</h2>;
+  return <h2>Please log in to see the model.</h2>;
 }
 
 return (
   <>
-    {/* Input och knapp */}
-    <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
-      <input
-        type="text"
-        value={drugInput}
-        onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
-        placeholder="Enter drug"
-      />
-      <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
-        Show in 3D
-      </button>
-    </div>
+   <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
+  <input
+    list="drug-list"
+    type="text"
+    value={drugInput}
+    onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
+    placeholder="Enter drug"
+  />
+
+  <datalist id="drug-list">
+    {drugList.map((drug) => (
+      <option key={drug} value={drug} />
+    ))}
+  </datalist>
+
+  <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
+    Show in 3D
+  </button>
+</div>
+
 
     <Canvas camera={{ position: [3, 2, 3], fov: 50 }} style={{ width: "100vw", height: "100vh" }}>
       <AmbientLight intensity={0.6} />

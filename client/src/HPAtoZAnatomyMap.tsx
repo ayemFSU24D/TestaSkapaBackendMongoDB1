@@ -17,7 +17,7 @@ export const HPAtoZAnatomyMap: Record<string, string | string[]> = {
   "gallbladder": "gallbladder",
   "heart muscle": "heartmuscle",    // fyll i korrekt namn
   "hippocampus": "hippocampus",  // fyll i korrekt namn
-  "kidney": ["kidneyr", "kidneyl"],
+  "kidney": "kidney",
   "liver": "liver",                   // fyll i korrekt namn
   "lung": "lung",                     // fyll i korrekt namn
   "lymph node": "lymphnode",                         // fyll i korrekt namn
@@ -38,7 +38,7 @@ export const HPAtoZAnatomyMap: Record<string, string | string[]> = {
   "soft tissue": ["softtissue", "skeletalmuscle"], // flera Blender-meshes
   "spleen": "spleen",
   "stomach": "stomach",
-  "testis": ["testisr", "testisl"],
+  "testis": "testis",
   "thyroid gland": "thyroidgland",                        // fyll i korrekt namn
   "tonsil": "tonsil",                               // fyll i korrekt namn
   "urinary bladder": "urinarybladder",

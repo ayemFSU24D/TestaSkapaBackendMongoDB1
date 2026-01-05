@@ -30,3 +30,18 @@ export const getDrugData = async (drugName: string) => {
   }
 };
 
+
+export const getDrugList = async (): Promise<string[]> => {
+  try {
+    const res = await fetch("http://localhost:3000/api/drug/list");
+
+    if (!res.ok) throw new Error("Failed to fetch drug list");
+
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+
