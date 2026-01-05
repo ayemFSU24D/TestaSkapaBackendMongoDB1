@@ -45,7 +45,7 @@ function normalizeHPAName(name: string) {
 export function Model({
   highlightedOrgans = []
 }: ModelProps) {
-  const { scene } = useGLTF("/models/Z-Anatomy+arm_muskles+armskinmesh2.glb");
+  const { scene } = useGLTF("/models/Z-Anatomy+arm_muskles+armskinmesh4.glb");
   
   // Skapa set av normaliserade HPA-namn
   const highlightedSet = useMemo(
