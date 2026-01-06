@@ -7,8 +7,8 @@ services:
     volumes:
       - mongodata:/data/db
   backend:
-    image: ghcr.io/<ditt-konto>/<backend-image>:latest
-    restart: always
+    build: .
+    restart: no
     ports:
       - 3000:3000
     environment:
