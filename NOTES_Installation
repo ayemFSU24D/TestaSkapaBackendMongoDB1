@@ -92,5 +92,7 @@ npm run dev */
 
 
 //------------------Docker---------------------------
+// ---docker build -t mybackend . //bygger en Docker image med namnet mybackend
 //----docker-compose up -d  ----------bygger containern i Docker---och går igenom hela kodträd och har koll på alla delar av koden och även node_modules där alla bibliotek som skapats via npm install(den kollar "instruktionerna" i package.json och sparar allt som finns där i node_modules)
 //---- npm start  ----------för att starta kontainern i Docker
+
