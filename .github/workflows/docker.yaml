@@ -18,7 +18,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest .
+        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest -f app/Dockerfile app
+
 
       - name: Push Docker image
         run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest
