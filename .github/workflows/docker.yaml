@@ -1,3 +1,17 @@
+name: Build and push to ACR
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Azure login
         uses: azure/login@v2
         with:
@@ -14,3 +28,10 @@
 
       - name: Push Docker image
         run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }}
+
+      - name: Deploy to Azure Container App
+        run: |
+          az containerapp update \
+            --name app-backend \
+            --resource-group human-app \
+            --image ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }}
