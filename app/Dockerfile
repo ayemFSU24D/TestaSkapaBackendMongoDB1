@@ -31,4 +31,4 @@ COPY . .
 EXPOSE 3000
 
 # Starta appen. Mer standart(fungerar även med ändringar i package.json som startinstruktioner)
-CMD ["npm", "start"] 
+CMD ["npm", "start"]

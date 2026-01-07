@@ -101,5 +101,5 @@ npm run dev */
 
 
       //Optional: 
-      // docker compose -p testaskapabackend up --build ---om du vill bygga(eller "bugga/koppla/använda" redan befintlig compose-projekt) och starta containern med ett specifikt projekt namn(testaskapabackend)
+      // docker compose -p testaskapabackend up --build   //om du vill bygga(eller "bugga/koppla/använda" redan befintlig compose-projekt) och starta containern med ett specifikt projekt namn(testaskapabackend)
 
