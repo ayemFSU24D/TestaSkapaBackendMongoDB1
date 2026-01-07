@@ -1,4 +1,4 @@
-name: Build and push to ACR
+name: Build, push and deploy to Azure Container App
 
 on:
   push:
@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Azure login
         uses: azure/login@v2
@@ -17,14 +18,18 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest -f app/Dockerfile app
-
-      - name: Docker login to ACR
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+        run: |
+          docker build \
+            -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }} \
+            -f app/Dockerfile app
 
       - name: Push Docker image
-        run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }}
+
+      - name: Deploy to Azure Container App
+        run: |
+          az containerapp update \
+            --name app-backend \
+            --resource-group human-app \
+            --image ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }}
