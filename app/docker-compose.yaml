@@ -18,7 +18,8 @@ services:
     ports:
       - 3000:3000
     environment:
-      - MONGO_URL=mongodb://mongo:27017
+      - MONGO_URL=${MONGO_URL}
+
     depends_on:
       - mongo
 volumes:
