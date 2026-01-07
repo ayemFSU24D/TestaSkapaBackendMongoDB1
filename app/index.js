@@ -10,7 +10,7 @@ import fs from "fs";
 const serviceAccount = JSON.parse(
   fs.readFileSync(process.env.SERVICE_ACCOUNT_FILE, "utf8")
 );
- 
+
 
 dotenv.config();
 
