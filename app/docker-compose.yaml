@@ -4,9 +4,7 @@
 # Den: använder Dockerfile (eller färdiga images), beskriver hur containrar pratar med varandra, sätter portar, miljövariabler, volymer
 
 
-version: '3.9'
 services:
-  # MongoDB service
   mongo: 
     image: mongo:latest
     restart: no
@@ -14,11 +12,8 @@ services:
       - 27017:27017
     volumes:
       - mongodata:/data/db
-  # Node JS backend service
   backend:
-    build: .  # Optional----Betyder “Bygg en image med Dockerfile i denna mapp(istället att använda en färdig image som nedan), och kör den som en service”
-      # man använder antingen build eller image #
-    # image: drugtargets3dhuman-f9e5g4e9h5e5aces.azurecr.io/backend:latest  # ghcr.io/ayemfsu24d/backend-image:latest #Github username: ayemFSU24D om man ska hämta från Docker Hub istället
+    build: .
     restart: no
     ports:
       - 3000:3000
