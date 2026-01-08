@@ -7,7 +7,7 @@ import { authenticate } from "./middleware/authenticate.js";
 import admin from "firebase-admin";
 import fs from "fs";
 
-/* const serviceAccount = JSON.parse(
+const serviceAccount = JSON.parse(
   fs.readFileSync(process.env.SERVICE_ACCOUNT_FILE, "utf8")
 );
  
@@ -16,7 +16,7 @@ dotenv.config();
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
-}); */
+});
 
 const app = express();
 
@@ -31,9 +31,9 @@ app.get("/", (_req, res) => {
   res.send("Backend running");
 });
 
+app.use("/api/drug/", drugRoutes);   // druglist
 app.use("/auth-api/drug", drugRoutes);
 app.use("/free-api/drug", drugRoutes);
-app.use("/api/drug/", drugRoutes);
 
 
 const PORT = process.env.PORT || 3000;

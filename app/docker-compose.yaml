@@ -13,12 +13,13 @@ services:
     volumes:
       - mongodata:/data/db
   backend:
-    build: .
+    image: app-backend:latest
     restart: no
     ports:
       - 3000:3000
     environment:
-      - MONGO_URL=${MONGO_URL}
+      MONGO_URL: mongodb://mongo:27017
+     # - MONGO_URL=${MONGO_URL} # alternativt hämta från .env fil men fungerade inte vid lokal testning, kanske fungerar bättre utan sträcketsättning i pipeline
 
     depends_on:
       - mongo
