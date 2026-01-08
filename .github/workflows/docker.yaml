@@ -16,11 +16,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set Azure subscription
-        run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Install Container Apps extension
-        run: az extension add --name containerapp --upgrade
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest -f app/Dockerfile app
 
       - name: Docker login to ACR
         uses: azure/docker-login@v1
@@ -29,21 +26,5 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build Docker image
-        run: |
-          docker build \
-            -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest \
-            -t ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }} \
-            -f app/Dockerfile app
-
-      - name: Push Docker images
-        run: |
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }}
-
-      - name: Deploy to Azure Container App
-        run: |
-          az containerapp update \
-            --name app-backend \
-            --resource-group human-app \
-            --image ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:${{ github.sha }}
+      - name: Push Docker image
+        run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-backend:latest

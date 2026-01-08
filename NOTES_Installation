@@ -92,14 +92,27 @@ npm run dev */
 
 
 //------------------Docker---------------------------
-//----docker-compose up -d  ----------bygger containern i Docker(compose-projekt)---och går igenom hela kodträd och har koll på alla delar av koden och även node_modules där alla bibliotek som skapats via npm install(den kollar "instruktionerna" i package.json och sparar allt som finns där i node_modules)
+//----docker compose up  ----------bygger containern i Docker(compose-projekt)---och går igenom hela kodträd och har koll på alla delar av koden och även node_modules där alla bibliotek som skapats via npm install(den kollar "instruktionerna" i package.json och sparar allt som finns där i node_modules)
 //---- npm start  ----------för att starta kontainern i Docker
 
 
       //Optional:
-      // (---docker build -t mybackend . // om du vill bygga bara en image med namnet mybackend)
 
+      // docker compose -p testaskapabackendmongodb up   //bygger eller återanvänder redan befintlig och startar specifik komposition i docker
+      // docker compose -p testaskapabackendmongodb up -d  // samma som up fast i bakgrunden("-d" frigör terminalen-dockern körs ändå) 
+              //imagerna som används är den som är anget som image i docker-compose filen (antingen befintlig eller skapas med detta namnet) 
+              // om ingen image ANGES (build: .) skapas en image automatisk med namnet på mappen där docker-compose.yml filen finns. om redan finns skapad sedan innan omskapas inte igen
 
       //Optional: 
-      // docker compose -p testaskapabackend up --build   //om du vill bygga(eller "bugga/koppla/använda" redan befintlig compose-projekt) och starta containern med ett specifikt projekt namn(testaskapabackend)
+      // docker compose -p testaskapabackend up --build   // samma som uppe fast bygger om imagerna i kompositionen(oavset om de finns redan eller inte) utan att starta dem
+      // docker compose -p testaskapabackend up -d --build   // frigör terminalen( med "-d" syns inte i terminalen att den körs ändå)
+      
+      
+      //Optional:
+      // (---docker build -t mybackend . // om du vill bygga bara en image med namnet mybackend och taggen "latest" utan att använda docker-compose filen---)
+      //       -t  = tag
+       //      .  = anger att Dockerfile finns i samma mapp där kommandot körs
+      
+       //      -p = port mapping (host:container) i docker run kommandot
+       //      -p = project name i docker compose kommandot
 
