@@ -9,6 +9,7 @@ import { AmbientLight, DirectionalLight } from './r3f-wrappers'
 import { auth } from "./firebase"; // justera path vid behov
 import { onAuthStateChanged, User } from "firebase/auth";
 import { ResponsiveModel } from './components/ResponsiveModel';
+import { NavLink } from 'react-router-dom';
 
 export default function ModelPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -74,8 +75,22 @@ const fetchDrugData = async () => {
 
 
  if (!user) {
-  return <h2>Please log in to see the model.</h2>;
+  return (
+    <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
+      <h2 className="text-xl font-semibold">
+        You need to be logged in to use the 3D model
+      </h2>
+
+      <NavLink
+        to="/Signup"
+        className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
+      >
+        Log in
+      </NavLink>
+    </div>
+  );
 }
+
 
 return (
   <>
