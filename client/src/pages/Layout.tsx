@@ -6,7 +6,7 @@ export const Layout = () => {
       {/* Header */}
       <header className="bg-blue-600 text-white">
         <nav className="container mx-auto flex justify-between items-center py-4 px-6">
-          <div className="text-xl font-bold">MyWebsite</div>
+          <div className="text-xl font-bold">Drug Targets 3D Human</div>
           <ul className="flex space-x-6">
             <li>
               <NavLink
@@ -53,9 +53,9 @@ export const Layout = () => {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 container mx-auto px-6 py-8">
-        <Outlet />
-      </main>
+      <main className="flex-1 container mx-auto px-4 py-4">
+  <Outlet />
+</main>
 
       {/* Footer */}
       <footer className="bg-gray-800 text-gray-200 py-6 mt-auto">

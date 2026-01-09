@@ -1,28 +1,13 @@
 interface ProteinPopupProps {
   drug: string;
-  organs: Record<string, string>; // organs and their effect levels
- 
+  organs: Record<string, string>;
 }
 
 export function ProteinPopup({ drug, organs }: ProteinPopupProps) {
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 50,
-        left: 10,
-        padding: "10px",
-        backgroundColor: "white",
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        zIndex: 2,
-        maxWidth: "300px",
-        maxHeight: "70vh",
-        overflowY: "auto",
-      }}
-    >
-      <h3>Drug: {drug}</h3>
-      <ul style={{ paddingLeft: "20px" }}>
+    <div className="mt-4 p-3 bg-white border border-gray-300 rounded shadow max-w-full max-h-[70vh] overflow-y-auto">
+      <h3 className="font-semibold mb-2">Drug: {drug}</h3>
+      <ul className="pl-4 space-y-1">
         {Object.entries(organs).map(([organ, level]) => (
           <li key={organ}>
             <strong>{organ}:</strong> {level}
@@ -32,4 +17,5 @@ export function ProteinPopup({ drug, organs }: ProteinPopupProps) {
     </div>
   );
 }
+
 

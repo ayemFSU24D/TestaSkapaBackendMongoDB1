@@ -1,191 +1,4 @@
-/* import Home from './pages/Home.jsx'
-
-function ModelPage() {
-  return(
-
-    <div>
-    <h1>ModelPage Component</h1>
-    <Home />
-    
-  </div>
-  )
-}
-
-export default ModelPage;
- */
-
-/* import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-
-function Model() {
-  const mountRef = useRef(null);
-
-  useEffect(() => {
-    // 1. Skapa scen, kamera och renderer
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xdddddd);
-
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      mountRef.current.clientWidth / mountRef.current.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.set(0, 1, 3);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    mountRef.current.appendChild(renderer.domElement);
-
-    // 2. Lägg till ljus
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 10, 7);
-    scene.add(light);
-
-    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambient);
-
-    // 3. Ladda GLB-modellen
-    const loader = new GLTFLoader();
-    const modelUrl = '/models/Z_Anatomy_After_Blender.glb';
-
-    loader.load(
-      modelUrl,
-      (gltf) => {
-        scene.add(gltf.scene);
-      },
-      undefined,
-      (error) => {
-        console.error('Error loading model:', error);
-      }
-    );
-
-    // 4. Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    // 5. Rensa när komponenten avmonteras
-    return () => {
-      mountRef.current.removeChild(renderer.domElement);
-      renderer.dispose();
-    };
-  }, []);
-
-  return <div ref={mountRef} style={{ width: '100vw', height: '100vh' }} />;
-}
-
-export default ModelPage; */
-
-
-//---------------------Fungerar!!!!!!!!!!!!!!!  Visar 3d kroppen------------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!------------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!------------------------
-
-/* import { Canvas } from "@react-three/fiber";
-import { useGLTF, OrbitControls } from "@react-three/drei";
-import { useEffect } from "react";
-import * as THREE from "three";
-
-function Model() {
-  const { scene } = useGLTF("/models/Z-Anatomy_After_Blender.glb");
-
-  useEffect(() => {
-    scene.traverse((obj) => {
-      if (obj.isMesh) {
-        console.log(obj.name);
-      }
-    });
-  }, [scene]);
-
-  return <primitive object={scene} />;
-}
-
-
-export default function ModelPage() {
-  return (
-    <><div style={{ width: '100vw', height: '100vh' }}>
-
-      <h1>Test Model</h1>
-      <Canvas camera={{ position: [3, 2, 3] }}>
-        <ambientLight />
-        <directionalLight position={[5, 5, 5]} />
-        <Model />
-        <OrbitControls />
-      </Canvas>
-    </div>
-    </>
-  );
-}
- */
-
-
-
-//---------------------Fungerar!!!!!!!!!!!!!!!  Visar 3d kroppen och även specifika organer ------------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!------------------------
-//---------------------Fungerar!!!!!!!!!!!!!!!------------------------
-
-/* import { Canvas } from "@react-three/fiber";
-import { useGLTF, OrbitControls } from "@react-three/drei";
-import { useEffect } from "react";
-import * as THREE from "three";
-
-function Model() {
-  const { scene } = useGLTF("/models/Z-Anatomy_After_Blender.glb");
-  
-  useEffect(() => {
-    scene.traverse((obj) => {
-      if (!obj.isMesh) return;
-      
-      // KLONA MATERIAL (annars påverkas allt)
-      obj.material = obj.material.clone();
-      obj.material.transparent = true;
-      
-      const name = obj.name.toLowerCase();
-
-      const isLiver = name.includes("liver");
-      
-      if (isLiver) {
-        // Levern tydlig
-        obj.material.opacity = 1;
-        obj.material.depthWrite = true;
-      } else {
-        // Resten av kroppen genomskinlig
-        obj.material.opacity = 0.15;
-        obj.material.depthWrite = false;
-      }
-    });
-  }, [scene]);
-  
-  return <primitive object={scene} />;
-}
-
-export default function ModelPage() {
-  return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={{ position: [3, 2, 3] }}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
-        <Model />
-        <OrbitControls />
-      </Canvas>
-    </div>
-  );
-  } */
- 
- 
- 
-
- //---------------------Ska testa först--------------------
- //---------------------Fungerar!!!!!!!!!!!!!!!----Kopplat till Backend api för proteininfohämtning--------------------
- //---------------------Fungerar!!!!!!!!!!!!!!!  Visar 3d kroppen och även specifika organer ------------------------
- //---------------------Fungerar!!!!!!!!!!!!!!!------------------------
- 
-
- import { getDrugData, getDrugList } from './services/DrugService';
+import { getDrugData, getDrugList } from './services/DrugService';
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -195,6 +8,7 @@ import { Mesh } from 'three';
 import { AmbientLight, DirectionalLight } from './r3f-wrappers'
 import { auth } from "./firebase"; // justera path vid behov
 import { onAuthStateChanged, User } from "firebase/auth";
+import { ResponsiveModel } from './components/ResponsiveModel';
 
 export default function ModelPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -207,6 +21,7 @@ export default function ModelPage() {
   const [highlightedOrgans, setHighlightedOrgans] = useState<string[]>([]);
 
 const [drugList, setDrugList] = useState<string[]>([]);
+
 
   useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -236,6 +51,8 @@ const [drugList, setDrugList] = useState<string[]>([]);
     });
   }, []);
 
+  
+
 
   // Hämtar data när man klickar på knappen
 
@@ -262,46 +79,65 @@ const fetchDrugData = async () => {
 
 return (
   <>
-   <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
-  <input
-    list="drug-list"
-    type="text"
-    value={drugInput}
-    onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
-    placeholder="Enter drug"
-  />
+   <div className="flex flex-col lg:flex-row gap-6 w-full">
 
-  <datalist id="drug-list">
-    {drugList.map((drug) => (
-      <option key={drug} value={drug} />
-    ))}
-  </datalist>
+      {/* VÄNSTER: Input + ProteinPopup */}
+      <div className="w-full lg:w-1/3 flex flex-col gap-4">
 
-  <button onClick={fetchDrugData} style={{ marginLeft: 5 }}>
-    Show in 3D
-  </button>
-</div>
+        <div className="bg-white p-4 rounded shadow">
+          <input
+            className="w-full border p-2 rounded mb-2"
+            list="drug-list"
+            type="text"
+            value={drugInput}
+            onChange={(e) => setDrugInput(e.target.value.toLowerCase())}
+            placeholder="Enter drug"
+          />
 
+          <button
+            onClick={fetchDrugData}
+            className="w-full bg-blue-600 text-white p-2 rounded"
+          >
+            Show in 3D
+          </button>
 
-    <Canvas camera={{ position: [3, 2, 3], fov: 50 }} style={{ width: "100vw", height: "100vh" }}>
-      <AmbientLight intensity={0.6} />
-      <DirectionalLight position={[5, 5, 5]} />
+          {/* ProteinPopup DIREKT UNDER INPUT */}
+          {drugData && (
+            <div className="mt-4 max-h-[40vh] overflow-y-auto">
+              <ProteinPopup
+                drug={drugData.drug}
+                organs={drugData.organs}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
-      <Model
-        highlightedOrgans={
-          drugData ? Object.keys(drugData.organs) : []
-        }
-      />
+      {/* HÖGER: 3D-modell */}
+      <div className="relative w-full lg:w-2/3 h-[50vh] lg:h-[70vh]">
+        <Canvas
+          camera={{ position: [4.5, 2.5, 4.5], fov: 50 }}
+          className="w-full h-full"
+        >
+          <AmbientLight intensity={0.6} />
+          <DirectionalLight position={[5, 5, 5]} />
 
-      <OrbitControls maxDistance={10} minDistance={2} target={[0, 1, 0]} />
-    </Canvas>
+          <ResponsiveModel
+            highlightedOrgans={
+              drugData ? Object.keys(drugData.organs) : []
+            }
+          />
 
-    {drugData && (
-      <ProteinPopup
-        drug={drugData.drug}
-        organs={drugData.organs}
-      />
-    )}
+          <OrbitControls
+            maxDistance={10}
+            minDistance={2}
+            target={[0, 1, 0]}
+          />
+        </Canvas>
+      </div>
+
+    </div>
+
   </>
 );
 
