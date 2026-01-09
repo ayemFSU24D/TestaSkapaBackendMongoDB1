@@ -47,7 +47,7 @@ export const Layout = () => {
               : "hover:text-teal-500 transition"
           }
         >
-          Sign in
+          Sign up
         </NavLink>
       </li>
 
