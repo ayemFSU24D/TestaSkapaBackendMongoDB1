@@ -2,104 +2,90 @@ import { getDrugData, getDrugList } from './services/DrugService';
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Model } from "./Human3dZ-Anatomy_Blender";
 import { ProteinPopup } from "./ProteinPopup";
 import { Mesh } from 'three';
-import { AmbientLight, DirectionalLight } from './r3f-wrappers'
-import { auth } from "./firebase"; // justera path vid behov
+import { AmbientLight, DirectionalLight } from './r3f-wrappers';
+import { auth } from "./firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { ResponsiveModel } from './components/ResponsiveModel';
 import { NavLink } from 'react-router-dom';
 
+type DrugData = {
+  drug: string;
+  organs: Record<string, string>;
+};
+
 export default function ModelPage() {
   const [user, setUser] = useState<User | null>(null);
+  const meshRef = useRef<Mesh>(null!);
 
-  const meshRef = useRef<Mesh>(null!)
-  const [drugInput, setDrugInput] = useState(""); // vad användaren skriver
-  const [drug, setDrug] = useState("");           // läkemedel som visas
-  type DrugData = { drug: string; organs: Record<string, string> }
+  const [drugInput, setDrugInput] = useState("");
   const [drugData, setDrugData] = useState<DrugData | null>(null);
-  const [highlightedOrgans, setHighlightedOrgans] = useState<string[]>([]);
+  const [drugList, setDrugList] = useState<string[]>([]);
 
-const [drugList, setDrugList] = useState<string[]>([]);
-
-
+  /* ================= AUTH ================= */
   useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-  });
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return unsubscribe;
+  }, []);
 
-  return unsubscribe;
-}, []);
-
-
-  // Hämta drugList med caching
+  /* ================= DRUG LIST (CACHE) ================= */
   useEffect(() => {
     const cached = localStorage.getItem("drugList");
     if (cached) {
       try {
         setDrugList(JSON.parse(cached));
-        return; // vi behöver inte hämta från backend
-      } catch (err) {
-        console.error("Failed to parse cached drugList:", err);
+        return;
+      } catch {
+        localStorage.removeItem("drugList");
       }
     }
 
-    // Annars hämta från backend och spara i localStorage
     getDrugList().then((list) => {
       setDrugList(list);
       localStorage.setItem("drugList", JSON.stringify(list));
     });
   }, []);
 
-  
+  /* ================= FETCH DRUG ================= */
+  const fetchDrugData = async () => {
+    if (!drugInput) return;
 
+    const data = await getDrugData(drugInput);
 
-  // Hämtar data när man klickar på knappen
+    if (data) {
+      setDrugData(data);
+    } else {
+      setDrugData(null);
+    }
+  };
 
-const fetchDrugData = async () => {
-  if (!drugInput) return;
+  /* ================= NOT LOGGED IN ================= */
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
+        <h2 className="text-xl font-semibold">
+          You need to be logged in to use the 3D model
+        </h2>
 
-  const data = await getDrugData(drugInput);
-
-  if (data) {
-    console.log("Fetched drug data:", data);
-    setDrug(drugInput);
-    setDrugData(data);
-    setHighlightedOrgans(Object.keys(data.organs || {}));
-  } else {
-    setDrugData(null);
-    setHighlightedOrgans([]);
+        <NavLink
+          to="/Signup"
+          className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
+        >
+          Log in
+        </NavLink>
+      </div>
+    );
   }
-};
 
-
- if (!user) {
+  /* ================= MAIN UI ================= */
   return (
-    <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
-      <h2 className="text-xl font-semibold">
-        You need to be logged in to use the 3D model
-      </h2>
+    <div className="flex flex-col lg:flex-row gap-6 w-full">
 
-      <NavLink
-        to="/Signup"
-        className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
-      >
-        Log in
-      </NavLink>
-    </div>
-  );
-}
-
-
-return (
-  <>
-   <div className="flex flex-col lg:flex-row gap-6 w-full">
-
-      {/* VÄNSTER: Input + ProteinPopup */}
+      {/* VÄNSTER: INPUT + INFO */}
       <div className="w-full lg:w-1/3 flex flex-col gap-4">
-
         <div className="bg-white p-4 rounded shadow">
+
           <input
             className="w-full border p-2 rounded mb-2"
             list="drug-list"
@@ -109,6 +95,13 @@ return (
             placeholder="Enter drug"
           />
 
+          {/* ✅ AUTOCOMPLETE LIST */}
+          <datalist id="drug-list">
+            {drugList.map((drug) => (
+              <option key={drug} value={drug} />
+            ))}
+          </datalist>
+
           <button
             onClick={fetchDrugData}
             className="w-full bg-blue-600 text-white p-2 rounded"
@@ -116,7 +109,7 @@ return (
             Show in 3D
           </button>
 
-          {/* ProteinPopup DIREKT UNDER INPUT */}
+          {/* ProteinPopup */}
           {drugData && (
             <div className="mt-4 max-h-[40vh] overflow-y-auto">
               <ProteinPopup
@@ -128,7 +121,7 @@ return (
         </div>
       </div>
 
-      {/* HÖGER: 3D-modell */}
+      {/* HÖGER: 3D MODELL */}
       <div className="relative w-full lg:w-2/3 h-[50vh] lg:h-[70vh]">
         <Canvas
           camera={{ position: [4.5, 2.5, 4.5], fov: 50 }}
@@ -150,10 +143,6 @@ return (
           />
         </Canvas>
       </div>
-
     </div>
-
-  </>
-);
-
+  );
 }
