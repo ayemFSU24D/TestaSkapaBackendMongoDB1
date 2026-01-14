@@ -3,25 +3,14 @@
 #-------------------------- Docker Compose – hur man kör FLERA containrar tillsammans(containrar skapas i Dockerfile) ------------------------------
 # Den: använder Dockerfile (eller färdiga images), beskriver hur containrar pratar med varandra, sätter portar, miljövariabler, volymer
 
-
 services:
-  mongo: 
-    image: mongo:latest
-    restart: no
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodata:/data/db
   backend:
     image: app-backend:latest
-    restart: no
+    restart: "no"
     ports:
-      - 3000:3000
+      - "3000:3000"
     environment:
-      MONGO_URL: mongodb://mongo:27017
-     # - MONGO_URL=${MONGO_URL} # alternativt hämta från .env fil men fungerade inte vid lokal testning, kanske fungerar bättre utan sträcketsättning i pipeline
+      MONGO_URL: ${MONGO_URL}
 
-    depends_on:
-      - mongo
 volumes:
   mongodata:
